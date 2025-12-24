@@ -11,6 +11,18 @@ pip install git+https://github.com/PierreAnken/pa-python-tools.git
 pip install .
 ```
 
+### Updating
+
+To update the package to the latest version:
+
+```bash
+# If installed via repository
+pip install --upgrade git+https://github.com/PierreAnken/pa-python-tools.git
+
+# If installed locally
+pip install --upgrade .
+```
+
 ### GitHub Configuration
 
 If you are using this package in another project hosted on GitHub, add the following line to your `requirements.txt` file:
