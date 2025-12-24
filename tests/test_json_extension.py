@@ -45,5 +45,12 @@ class TestJSONExtension(unittest.TestCase):
         self.assertEqual(decoded["dict"][4], datetime(2023, 1, 1))
         self.assertEqual(decoded["dict"]["set"], {5})
 
+    def test_encode_decode_tuple(self):
+        data = {"mytuple": (1, 2, 3)}
+        json_str = json.dumps(data, cls=CustomJSONEncoder)
+        decoded = json.loads(json_str, object_hook=tagged_decoder_hook)
+        self.assertEqual(decoded["mytuple"], (1, 2, 3))
+        self.assertIsInstance(decoded["mytuple"], tuple)
+
 if __name__ == '__main__':
     unittest.main()

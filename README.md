@@ -28,6 +28,7 @@ Provides a custom JSON encoder and decoder to handle types not supported by defa
 #### Features
 
 - **Sets**: Automatically converts `set` to a list with a `__set__` marker.
+- **Tuples**: Automatically converts `tuple` to a list with a `__tuple__` marker.
 - **Datetimes**: Automatically converts `datetime` objects to ISO format with a `__datetime__` marker.
 - **Integer keys**: Handles integer keys in dictionaries (which are usually converted to strings by JSON).
 
@@ -40,6 +41,7 @@ from json_tools.json_extension import CustomJSONEncoder, tagged_decoder_hook
 
 data = {
     "my_set": {1, 2, 3},
+    "my_tuple": (1, 2, 3),
     "my_date": datetime.now(),
     1: "integer key"
 }
@@ -51,7 +53,7 @@ json_string = json.dumps(data, cls=CustomJSONEncoder)
 decoded_data = json.loads(json_string, object_hook=tagged_decoder_hook)
 
 print(decoded_data)
-# Output will have the set, datetime, and integer key restored correctly.
+# Output will have the set, tuple, datetime, and integer key restored correctly.
 ```
 
 ## Development

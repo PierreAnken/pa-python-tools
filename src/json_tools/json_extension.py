@@ -16,21 +16,18 @@ class CustomJSONEncoder(json.JSONEncoder):
         Encode the object, converting integer keys in dictionaries to strings with a prefix.
         Handles nested structures.
         """
-        if isinstance(obj, dict):
-            new_obj = {f"__int__{k}" if isinstance(k, int) else k: self._encode_nested(v) for k, v in obj.items()}
-            return super().encode(new_obj)
-        if isinstance(obj, list):
-            return super().encode([self._encode_nested(v) for v in obj])
-        return super().encode(obj)
+        return super().encode(self._encode_nested(obj))
 
     def _encode_nested(self, obj):
         """
-        Recursively process nested dictionaries and lists.
+        Recursively process nested dictionaries, lists and tuples.
         """
         if isinstance(obj, dict):
             return {f"__int__{k}" if isinstance(k, int) else k: self._encode_nested(v) for k, v in obj.items()}
         if isinstance(obj, list):
             return [self._encode_nested(v) for v in obj]
+        if isinstance(obj, tuple):
+            return {"__tuple__": [self._encode_nested(v) for v in obj]}
         return obj
 
     def default(self, obj):
@@ -51,6 +48,10 @@ def tagged_decoder_hook(d):
     # Sets
     if "__set__" in d:
         return set(d["__set__"])
+
+    # Tuples
+    if "__tuple__" in d:
+        return tuple(d["__tuple__"])
 
     # Datetimes
     if "__datetime__" in d:
