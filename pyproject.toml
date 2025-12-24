@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pa-python-tools"
-version = "0.1.0"
+version = "0.1.1"
 description = "Collection of Python tools and helpers"
 readme = "README.md"
 authors = [{ name = "Pierre Anken", email = "pierre@anken.ch" }]

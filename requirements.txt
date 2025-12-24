@@ -1,3 +1,0 @@
-# No external dependencies required for basic usage.
-# For development:
-# pip install -e .[dev]
