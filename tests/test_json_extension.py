@@ -1,6 +1,6 @@
 import unittest
 import json
-from datetime import datetime
+from datetime import datetime, date
 from json_tools.json_extension import TaggedJSONEncoder, tagged_decoder_hook
 
 class TestJSONExtension(unittest.TestCase):
@@ -80,6 +80,27 @@ class TestJSONExtension(unittest.TestCase):
         self.assertEqual(decoded[now], "now's value")
         self.assertEqual(decoded[1.5], "float key")
         self.assertEqual(decoded[True], "bool key")
+
+    def test_deeply_nested_recursivity(self):
+        # Test complex nesting: a tuple containing a set, which is a value in a dict with an int key
+        # and that dict is inside a list.
+        data = [
+            {
+                1: ({datetime(2023, 1, 1), date(2023, 1, 1)}, "test"),
+                "float_key": {1.5: {True: (False,)}}
+            }
+        ]
+        json_str = json.dumps(data, cls=TaggedJSONEncoder)
+        decoded = json.loads(json_str, object_hook=tagged_decoder_hook)
+        
+        self.assertIsInstance(decoded, list)
+        self.assertIsInstance(decoded[0], dict)
+        self.assertIn(1, decoded[0])
+        self.assertIsInstance(decoded[0][1], tuple)
+        self.assertIsInstance(decoded[0][1][0], set)
+        self.assertIn(datetime(2023, 1, 1), decoded[0][1][0])
+        self.assertIn(date(2023, 1, 1), decoded[0][1][0])
+        self.assertEqual(decoded[0]["float_key"][1.5][True], (False,))
 
 if __name__ == '__main__':
     unittest.main()

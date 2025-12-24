@@ -60,6 +60,8 @@ class TaggedJSONEncoder(json.JSONEncoder):
 def tagged_decoder_hook(d):
     """
     Custom JSON decoder that restores sets, datetimes, and integer keys from their encoded format.
+    This hook is called by json.loads for every decoded dictionary. Since json.loads
+    processes the structure bottom-up, it is naturally recursive.
     """
     # Sets
     if "__set__" in d:
