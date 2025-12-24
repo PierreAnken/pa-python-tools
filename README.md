@@ -50,7 +50,7 @@ Provides a custom JSON encoder and decoder to handle types not supported by defa
 ```python
 import json
 from datetime import datetime, date
-from json_tools.json_extension import CustomJSONEncoder, tagged_decoder_hook
+from json_tools.json_extension import TaggedJSONEncoder, tagged_decoder_hook
 
 data = {
     "my_set": {1, 2, 3},
@@ -61,7 +61,7 @@ data = {
 }
 
 # Encoding
-json_string = json.dumps(data, cls=CustomJSONEncoder)
+json_string = json.dumps(data, cls=TaggedJSONEncoder)
 
 # Decoding
 decoded_data = json.loads(json_string, object_hook=tagged_decoder_hook)

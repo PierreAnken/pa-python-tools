@@ -6,7 +6,7 @@ import json
 from datetime import datetime, date
 
 
-class CustomJSONEncoder(json.JSONEncoder):
+class TaggedJSONEncoder(json.JSONEncoder):
     """
     Custom JSON encoder that supports sets, datetimes, dates, and integer keys in dictionaries.
     """
