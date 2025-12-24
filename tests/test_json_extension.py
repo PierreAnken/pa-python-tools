@@ -61,5 +61,25 @@ class TestJSONExtension(unittest.TestCase):
         self.assertEqual(decoded["mytuple"], (1, 2, 3))
         self.assertIsInstance(decoded["mytuple"], tuple)
 
+    def test_encode_decode_complex_keys(self):
+        from datetime import date, datetime
+        today = date.today()
+        now = datetime.now()
+        data = {
+            today: "today's value",
+            now: "now's value",
+            1.5: "float key",
+            True: "bool key"
+        }
+        json_str = json.dumps(data, cls=TaggedJSONEncoder)
+        decoded = json.loads(json_str, object_hook=tagged_decoder_hook)
+        
+        # Note: True is usually converted to "true" by json.dumps if not handled.
+        # But here we want to see if we can preserve the type.
+        self.assertEqual(decoded[today], "today's value")
+        self.assertEqual(decoded[now], "now's value")
+        self.assertEqual(decoded[1.5], "float key")
+        self.assertEqual(decoded[True], "bool key")
+
 if __name__ == '__main__':
     unittest.main()

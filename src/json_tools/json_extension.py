@@ -21,9 +21,23 @@ class TaggedJSONEncoder(json.JSONEncoder):
     def _encode_nested(self, obj):
         """
         Recursively process nested dictionaries, lists and tuples.
+        Handles various key types for dictionaries.
         """
         if isinstance(obj, dict):
-            return {f"__int__{k}" if isinstance(k, int) else k: self._encode_nested(v) for k, v in obj.items()}
+            new_dict = {}
+            for k, v in obj.items():
+                if isinstance(k, bool):
+                    new_key = f"__bool__{k}"
+                elif isinstance(k, int):
+                    new_key = f"__int__{k}"
+                elif isinstance(k, float):
+                    new_key = f"__float__{k}"
+                elif isinstance(k, (datetime, date)):
+                    new_key = f"__{type(k).__name__}__{k.isoformat()}"
+                else:
+                    new_key = k
+                new_dict[new_key] = self._encode_nested(v)
+            return new_dict
         if isinstance(obj, list):
             return [self._encode_nested(v) for v in obj]
         if isinstance(obj, tuple):
@@ -66,8 +80,19 @@ def tagged_decoder_hook(d):
     # Tagged keys
     new_dict = {}
     for k, v in d.items():
-        if isinstance(k, str) and k.startswith("__int__"):
-            new_dict[int(k.replace("__int__", ""))] = v
+        if isinstance(k, str):
+            if k.startswith("__int__"):
+                new_dict[int(k.replace("__int__", ""))] = v
+            elif k.startswith("__float__"):
+                new_dict[float(k.replace("__float__", ""))] = v
+            elif k.startswith("__bool__"):
+                new_dict[k.replace("__bool__", "") == "True"] = v
+            elif k.startswith("__datetime__"):
+                new_dict[datetime.fromisoformat(k.replace("__datetime__", ""))] = v
+            elif k.startswith("__date__"):
+                new_dict[date.fromisoformat(k.replace("__date__", ""))] = v
+            else:
+                new_dict[k] = v
         else:
             new_dict[k] = v
     return new_dict

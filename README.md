@@ -43,7 +43,7 @@ Provides a custom JSON encoder and decoder to handle types not supported by defa
 - **Tuples**: Automatically converts `tuple` to a list with a `__tuple__` marker.
 - **Datetimes**: Automatically converts `datetime` objects to ISO format with a `__datetime__` marker.
 - **Dates**: Automatically converts `date` objects to ISO format with a `__date__` marker.
-- **Integer keys**: Handles integer keys in dictionaries (which are usually converted to strings by JSON).
+- **Complex keys**: Handles integer, float, boolean, date, and datetime keys in dictionaries (which are usually converted to strings or rejected by JSON).
 
 #### Usage
 
@@ -57,7 +57,11 @@ data = {
     "my_tuple": (1, 2, 3),
     "my_datetime": datetime.now(),
     "my_date": date.today(),
-    1: "integer key"
+    1: "integer key",
+    1.5: "float key",
+    True: "boolean key",
+    date.today(): "date key",
+    datetime.now(): "datetime key"
 }
 
 # Encoding
@@ -67,7 +71,7 @@ json_string = json.dumps(data, cls=TaggedJSONEncoder)
 decoded_data = json.loads(json_string, object_hook=tagged_decoder_hook)
 
 print(decoded_data)
-# Output will have the set, tuple, datetime, date, and integer key restored correctly.
+# Output will have the set, tuple, datetime, date, and complex keys restored correctly.
 ```
 
 ## Development
