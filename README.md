@@ -5,7 +5,7 @@ Collection of Python tools and helpers
 
 ```bash
 # Direct installation via repository
-pip install git+https://github.com/pierre-anken/pa-python-tools.git
+pip install git+https://github.com/PierreAnken/pa-python-tools.git
 
 # Or local installation after cloning the project
 pip install .
@@ -16,7 +16,7 @@ pip install .
 If you are using this package in another project hosted on GitHub, add the following line to your `requirements.txt` file:
 
 ```text
-pa-python-tools @ git+https://github.com/pierre-anken/pa-python-tools.git
+pa-python-tools @ git+https://github.com/PierreAnken/pa-python-tools.git
 ```
 
 ## Tools
