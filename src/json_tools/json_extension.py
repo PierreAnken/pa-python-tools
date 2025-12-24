@@ -1,14 +1,14 @@
 """
-Module providing a custom JSON encoder and decoder to handle sets, datetimes, and integer keys in dictionaries.
+Module providing a custom JSON encoder and decoder to handle sets, datetimes, dates, and integer keys in dictionaries.
 """
 
 import json
-from datetime import datetime
+from datetime import datetime, date
 
 
 class CustomJSONEncoder(json.JSONEncoder):
     """
-    Custom JSON encoder that supports sets, datetimes, and integer keys in dictionaries.
+    Custom JSON encoder that supports sets, datetimes, dates, and integer keys in dictionaries.
     """
 
     def encode(self, obj):
@@ -32,12 +32,14 @@ class CustomJSONEncoder(json.JSONEncoder):
 
     def default(self, obj):
         """
-        Handle sets and datetimes during encoding.
+        Handle sets, datetimes, and dates during encoding.
         """
         if isinstance(obj, set):
             return {"__set__": list(obj)}
         if isinstance(obj, datetime):
             return {"__datetime__": obj.isoformat()}
+        if isinstance(obj, date):
+            return {"__date__": obj.isoformat()}
         return super().default(obj)
 
 
@@ -56,6 +58,10 @@ def tagged_decoder_hook(d):
     # Datetimes
     if "__datetime__" in d:
         return datetime.fromisoformat(d["__datetime__"])
+
+    # Dates
+    if "__date__" in d:
+        return date.fromisoformat(d["__date__"])
 
     # Tagged keys
     new_dict = {}

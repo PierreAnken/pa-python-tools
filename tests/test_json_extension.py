@@ -20,6 +20,15 @@ class TestJSONExtension(unittest.TestCase):
         self.assertEqual(decoded["mydate"], now)
         self.assertIsInstance(decoded["mydate"], datetime)
 
+    def test_encode_decode_date(self):
+        from datetime import date
+        today = date.today()
+        data = {"today": today}
+        json_str = json.dumps(data, cls=CustomJSONEncoder)
+        decoded = json.loads(json_str, object_hook=tagged_decoder_hook)
+        self.assertEqual(decoded["today"], today)
+        self.assertIsInstance(decoded["today"], date)
+
     def test_encode_decode_int_keys(self):
         data = {1: "one", 2: "two", "three": 3}
         json_str = json.dumps(data, cls=CustomJSONEncoder)
